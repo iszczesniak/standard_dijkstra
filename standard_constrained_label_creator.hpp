@@ -1,23 +1,23 @@
 #ifndef STANDARD_CONSTRAINED_LABEL_CREATOR_HPP
 #define STANDARD_CONSTRAINED_LABEL_CREATOR_HPP
 
-#include "standard_label.hpp"
+#include "standard_label_creator.hpp"
 
 #include <array>
 #include <tuple>
 
 // Creates new labels.
 template <typename Graph, typename Cost>
-struct standard_constrained_label_creator
+struct standard_constrained_label_creator:
+  standard_label_creator<Graph, Cost>
 {
   using Label = standard_label<Graph, Cost>;
-
-  const Graph &m_g;
+  using base = standard_label_creator<Graph, Cost>;
 
   const Cost m_max_cost;
 
   standard_constrained_label_creator(const Graph &g, Cost max_cost):
-    m_g(g), m_max_cost(max_cost)
+    base(g), m_max_cost(max_cost)
   {
   }
 
@@ -26,15 +26,14 @@ struct standard_constrained_label_creator
   auto
   operator()(const Edge<Graph> &e, const Label &l) const
   {
-    // The cost of the new label = cost of label l + cost of edge e.
-    Cost c = get_cost(l) + boost::get(boost::edge_weight, m_g, e);
+    auto f = [&m_max_cost = m_max_cost](Cost c)
+             {
+               if (c > m_max_cost)
+                 // If we went over the reach, throw true.
+                 throw true;
+             };
 
-    if (c <= m_max_cost)
-      // At cost c, and along edge e, we reach the target of e.
-      return std::array<Label, 1>({Label(c, e, target(e, m_g))});
-
-    // If we went over the reach, throw true.
-    throw true;
+    return base::operator()(e, l, f);
   }
 };
 

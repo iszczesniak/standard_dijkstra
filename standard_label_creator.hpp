@@ -6,6 +6,15 @@
 #include <array>
 #include <tuple>
 
+template <typename F, typename ... Args>
+concept Callable = requires(F f, Args ... args)
+{
+ f(args...);
+};
+
+template <typename ... Args>
+using EmptyCallable = decltype([](Args ...){});
+
 // Creates new labels.
 template <typename Graph, typename Cost>
 struct standard_label_creator
@@ -21,11 +30,15 @@ struct standard_label_creator
 
   // Create a new label.  We are at the target node of label l, and we
   // take edge e.
+  // template <Callable<Cost> F = EmptyCallable<Cost>>
+  template <Callable<Cost> F>
   auto
-  operator()(const Edge<Graph> &e, const Label &l) const
+  operator()(const Edge<Graph> &e, const Label &l, F f = {}) const
   {
     // The cost of the new label = cost of label l + cost of edge e.
     Cost c = get_cost(l) + boost::get(boost::edge_weight, m_g, e);
+
+    f(c);
 
     // At cost c, and along edge e, we reach the target of e.
     return std::array<Label, 1>({Label(c, e, target(e, m_g))});
