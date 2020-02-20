@@ -6,15 +6,6 @@
 #include <array>
 #include <tuple>
 
-template <typename F, typename ... Args>
-concept Callable = requires(F f, Args ... args)
-{
- f(args...);
-};
-
-template <typename ... Args>
-using EmptyCallable = decltype([](Args ...){});
-
 // Creates new labels.
 template <typename Graph, typename Cost>
 struct standard_label_creator
