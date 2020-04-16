@@ -19,10 +19,8 @@ struct standard_label_creator
   {
   }
 
-  // Create a new label.  We are at the target node of label l, and we
-  // take edge e.
-  // template <Callable<Cost> F = EmptyCallable<Cost>>
-  template <Callable<Cost> F>
+  // Create a new label: at the target node of label l, take edge e.
+  template <Callable<Cost> F = EmptyCallable<Cost>>
   auto
   operator()(const Edge<Graph> &e, const Label &l, F f = {}) const
   {
