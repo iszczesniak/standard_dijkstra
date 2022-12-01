@@ -1,8 +1,6 @@
 #ifndef STANDARD_PERMANENT_HPP
 #define STANDARD_PERMANENT_HPP
 
-#include "standard_label.hpp"
-
 #include <cassert>
 #include <optional>
 #include <utility>
@@ -28,14 +26,14 @@ struct myoptional: public std::optional<T>
 // for the std::optional instead of std::unique_ptr, because optional
 // stores its value inside, and so the labels are allocated in-place
 // and not in a remote part.
-template <typename Graph, typename Cost>
+template <typename Weight>
 struct standard_permanent:
-  std::vector<myoptional<standard_label<Graph, Cost>>>
+  std::vector<myoptional<standard_label<Weight>>>
 {
   // That's the label type we're using.
-  using label_t = standard_label<Graph, Cost>;
+  using label_type = standard_label<Weight>;
   // The type of data a vertex has.
-  using vd_t = myoptional<label_t>;
+  using vd_t = myoptional<label_type>;
   // The type of the vector of vertex data.
   using base = std::vector<vd_t>;
   // The size type of the vovd_t.
@@ -47,7 +45,7 @@ struct standard_permanent:
 
   // Pushes a new label, and returns a reference to it.
   template <typename T>
-  const label_t &
+  const label_type &
   push(T &&l)
   {
     // The target vertex of the label.
