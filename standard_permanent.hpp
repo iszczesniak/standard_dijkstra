@@ -27,8 +27,7 @@ struct myoptional: public std::optional<T>
 // stores its value inside, and so the labels are allocated in-place
 // and not in a remote part.
 template <typename Label>
-struct standard_permanent:
-  std::vector<myoptional<Label>>
+struct standard_permanent: std::vector<myoptional<Label>>
 {
   // That's the label type we're using.
   using label_type = Label;
@@ -36,7 +35,7 @@ struct standard_permanent:
   using vd_t = myoptional<label_type>;
   // The type of the vector of vertex data.
   using base = std::vector<vd_t>;
-  // The size type of the vovd_t.
+  // The size type of the base.
   using size_type = typename base::size_type;
 
   standard_permanent(size_type count): base(count)
