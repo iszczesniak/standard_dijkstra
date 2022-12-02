@@ -1,8 +1,6 @@
 #ifndef STANDARD_TENTATIVE_HPP
 #define STANDARD_TENTATIVE_HPP
 
-#include "standard_label.hpp"
-
 #include <cassert>
 #include <memory>
 #include <queue>

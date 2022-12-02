@@ -26,12 +26,12 @@ struct myoptional: public std::optional<T>
 // for the std::optional instead of std::unique_ptr, because optional
 // stores its value inside, and so the labels are allocated in-place
 // and not in a remote part.
-template <typename Weight>
+template <typename Label>
 struct standard_permanent:
-  std::vector<myoptional<standard_label<Weight>>>
+  std::vector<myoptional<Label>>
 {
   // That's the label type we're using.
-  using label_type = standard_label<Weight>;
+  using label_type = Label;
   // The type of data a vertex has.
   using vd_t = myoptional<label_type>;
   // The type of the vector of vertex data.
