@@ -2,36 +2,29 @@
 #define STANDARD_TENTATIVE_HPP
 
 #include <cassert>
-#include <memory>
-#include <queue>
+#include <optional>
+#include <set>
 #include <vector>
 
-// The container type for storing the standard tentative labels.  A
-// vertex can have a shared (with the priority queue) label or not.
-// For each vertex we store a shared_ptr to the label, because we
-// create a weak_ptr in the priority queue.
-template <typename Graph, typename Cost>
-struct standard_tentative:
-  std::vector<std::shared_ptr<standard_label<Graph, Cost>>>
+// The container type for storing tentative labels for the standard
+// Dijkstra algorithm.  A vertex can have a single label only, because
+// we assume the ordering between labels is linear.
+template <typename Label>
+struct standard_tentative: std::vector<std::optional<Label>>
 {
-  // That's the label type we're using.
-  using label_t = standard_label<Graph, Cost>;
+  // The label type.
+  using label_type = Label;
   // The type of data a vertex has.
-  using vd_t = std::shared_ptr<label_t>;
+  using vd_type = std::optional<label_type>;
   // The type of the vector of vertex data.
-  using base = std::vector<vd_t>;
-  // The size type of the vovd_t.
-  using size_type = typename base::size_type;
+  using base_type = std::vector<vd_type>;
+  // The size type of the base type.
+  using size_type = typename base_type::size_type;
 
-  // The priority queue element type.
-  using pqet = std::pair<Cost, std::weak_ptr<label_t>>;
-
-  // The priority queue.
-  std::priority_queue<pqet, std::vector<pqet>,
-                      std::function<bool(const pqet &,
-                                         const pqet &)>>
-    m_pq{[](const auto &a, const auto &b)
-      {return ! (a.first < b.first);}};
+  // The set of indexes that serves as the priority queue.
+  std::multiset<size_type, bool(const size_type &, const size_type &)>
+  m_pq{[](const size_type &a, const size_type &b)
+  {return *base_type::operator[](a) < *base_type::operator[](b)}};
 
   standard_tentative(size_type count): base(count)
   {
