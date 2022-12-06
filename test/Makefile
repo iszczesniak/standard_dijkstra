@@ -1,14 +1,11 @@
-TESTS = generic_tentative
+TESTS = standard_tentative
 
 #CXXFLAGS = -g -Wno-deprecated
 CXXFLAGS = -O3 -Wno-deprecated
 
 CXXFLAGS := -std=c++20
 CXXFLAGS := $(CXXFLAGS) -I ../
-CXXFLAGS := $(CXXFLAGS) -I generic_dijkstra
 CXXFLAGS := $(CXXFLAGS) -I graph
-CXXFLAGS := $(CXXFLAGS) -I standard_dijkstra
-CXXFLAGS := $(CXXFLAGS) -I units
 
 # Use the C++ linker
 LINK.o = $(LINK.cc)

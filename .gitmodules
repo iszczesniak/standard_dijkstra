@@ -1,0 +1,3 @@
+[submodule "test/graph"]
+	path = test/graph
+	url = https://github.com/iszczesniak/graph2

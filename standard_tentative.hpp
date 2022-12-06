@@ -35,14 +35,14 @@ struct standard_tentative: std::vector<std::optional<Label>>
   void
   push(T &&l)
   {
-    // The target vertex of the label.
-    const auto &t = get_target(l);
-    // There should be no label for vertex t.
-    assert(!base::operator[](t));
-    // Make a shared_ptr.
-    base::operator[](t) = std::make_shared<label_t>(l);
-    // Push the weak_ptr for the label into the priority queue.
-    m_pq.push({get_cost(l), base::operator[](t)});
+    // The index of the label.
+    const auto &i = get_index(l);
+    // There should be no label for index i.
+    assert(!base::operator[](i));
+    // Set the label for index i.
+    base::operator[](i) = std::forward<T>(l);
+    // Push the index into the priority queue.
+    m_pq.push(i);
   }
 
   bool
