@@ -25,22 +25,27 @@ int main()
 {
   label l1(1, 0), l2(0, 0), l3(0, 1);
   standard_tentative<label> t(2);
-  t.push(l1);
+
+  // Labels l2 and l3 compare equal, becaue neither l2 < l3, nor l3 <
+  // l2 hold.  The order between equal labels is stable, because the
+  // insert function inserts an equal element at the upper bound
+  // (i.e., after the last equal element), and the sorting is stable.
+  t.push(l2);
   t.push(l3);
 
   {
     auto l = t.pop();
-    assert(l == l3);
+    assert(l == l2);
   }
   
   {
     auto l = t.pop();
-    assert(l == l1);
+    assert(l == l3);
   }
 
-  t.push(l2);
+  t.push(l1);
   {
     auto l = t.pop();
-    assert(l == l2);
+    assert(l == l1);
   }
 }
