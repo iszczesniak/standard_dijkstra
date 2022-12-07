@@ -32,8 +32,8 @@ struct standard_permanent: std::vector<std::optional<Label>>
   const label_type &
   push(T &&l)
   {
-    // The index of the target vertex of the label.
-    const auto &i = get_index(get_target(l));
+    // The index of the label.
+    const auto &i = get_index(l);
     // There should be no label for the target vertex.
     assert(!base_type::operator[](i));
     // Assign the value, and return the reference to the label.  The *
