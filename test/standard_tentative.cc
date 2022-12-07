@@ -6,12 +6,13 @@ struct label: weight<unsigned>, index<unsigned>
   label(unsigned w, unsigned i): weight(w), index(i)
   {
   }
-
-  bool operator < (const label &) const
-  {
-    return get_weight(*this) < get_weight(l);
-  }
 };
+
+bool
+operator < (const label &l1, const label &l2)
+{
+  return get_weight(l1) < get_weight(l2);
+}
 
 int main()
 {
