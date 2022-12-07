@@ -17,7 +17,7 @@ operator < (const label &l1, const label &l2)
 int main()
 {
   label l1(1, 0), l2(0, 0), l3(0, 1);
-  standard_tentative<label> t;
+  standard_tentative<label> t(2);
   t.push(l1);
   t.push(l2);
   t.push(l3);

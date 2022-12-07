@@ -21,15 +21,29 @@ struct standard_tentative: std::vector<std::optional<Label>>
   // The size type of the base type.
   using size_type = typename base_type::size_type;
 
+  // The functor structure for comparing the elements of the queue.  I
+  // tried to rewrite this as a lambda, but it failed to compile.
+  struct cmp
+  {
+    base_type &m_r;
+
+    cmp(base_type &r): m_r(r)
+    {
+    }
+
+    bool operator()(const size_type &a, const size_type &b) const
+    {
+      return *m_r.operator[](a) < *m_r.operator[](b);
+    }
+  };
+
   // The set of indexes that serves as the priority queue.  We need
   // the multiset, because there can be labels that compare equal with
   // the < operator (i.e., < doesn't hold between them): equal labels
   // for different vertexes.
-  std::multiset<size_type, bool(const size_type &, const size_type &)>
-  m_pq{[](const size_type &a, const size_type &b)
-  {return *base_type::operator[](a) < *base_type::operator[](b);}};
+  std::multiset<size_type, cmp> m_pq;
 
-  standard_tentative(size_type count): base_type(count)
+  standard_tentative(size_type count): base_type(count), m_pq(cmp(*this))
   {
   }
 
