@@ -8,16 +8,6 @@
 #include <cassert>
 #include <map>
 
-// Move the best label from T to P, and return a reference to the
-// label in the new place.
-template <typename Graph, typename Cost>
-const auto &
-move_label(standard_tentative<Graph, Cost> &T,
-           standard_permanent<Graph, Cost> &P)
-{
-  return P.push(T.pop());
-}
-
 // Here we compare only the cost of the labels.  Each node can have
 // only one label.
 template <typename Container, typename Graph, typename Cost>

@@ -43,7 +43,8 @@ struct standard_tentative: std::vector<std::optional<Label>>
   // for different vertexes.
   std::multiset<size_type, cmp> m_pq;
 
-  standard_tentative(size_type count): base_type(count), m_pq(cmp(*this))
+  standard_tentative(size_type count):
+    base_type(count), m_pq(cmp(*this))
   {
   }
 
