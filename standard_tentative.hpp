@@ -116,7 +116,7 @@ purge_worse(standard_tentative<Label> &T,
             const Label &j)
 {
   // The optional tentative label for the vertex of index j.
-  const auto &oi = T[get_index(j)];
+  auto &oi = T[get_index(j)];
   // There must be no tentative label, and if there is one, it cannot
   // be better or equal to j.
   assert(!oi || !(*oi <= j));
