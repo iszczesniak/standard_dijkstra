@@ -90,4 +90,38 @@ struct standard_tentative: std::vector<std::optional<Label>>
   }
 };
 
+template <typename Label>
+bool
+has_better_or_equal(const standard_tentative<Label> &C,
+                    const Label &j)
+{
+  // The optional label i.
+  const auto &oi = C[get_index(j)];
+
+  if (oi)
+    {
+      const auto &i = *oi;
+      // Make sure the indexes are the same.
+      assert(get_index(i) == get_index(j));
+      // Here we use the <= operator we define.
+      return i <= j;
+    }
+
+  return false;
+}
+
+template <typename Label>
+void
+purge_worse(standard_tentative<Label> &T,
+            const Label &j)
+{
+  // The optional tentative label for the vertex of index j.
+  const auto &oi = T[get_index(j)];
+  // There must be no tentative label, and if there is one, it cannot
+  // be better or equal to j.
+  assert(!oi || !(*oi <= j));
+  // And so we get here only to release the tentative label.
+  oi.reset();
+}
+
 #endif // STANDARD_TENTATIVE_HPP

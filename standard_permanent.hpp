@@ -42,4 +42,24 @@ struct standard_permanent: std::vector<std::optional<Label>>
   }
 };
 
+template <typename Label>
+bool
+has_better_or_equal(const standard_permanent<Label> &C,
+                    const Label &j)
+{
+  // The optional label i.
+  const auto &oi = C[get_index(j)];
+
+  if (oi)
+    {
+      const auto &i = *oi;
+      // Make sure the indexes are the same.
+      assert(get_index(i) == get_index(j));
+      // Here we use the <= operator we define.
+      return i <= j;
+    }
+
+  return false;
+}
+
 #endif // STANDARD_PERMANENT_HPP
