@@ -50,17 +50,19 @@ struct standard_tentative: std::vector<std::optional<Label>>
 
   // This function pushes a new label.
   template <typename T>
-  void
+  const label_type &
   push(T &&l)
   {
     // The index of the label.
     const auto &i = get_index(l);
     // There should be no label for index i.
     assert(!base_type::operator[](i));
-    // Set the label for index i.
-    base_type::operator[](i) = std::forward<T>(l);
+    // Emplace (copy or move construct) the value.
+    auto &r = base_type::operator[](i).emplace(std::forward<T>(l));
     // Insert the index into the priority queue.
     m_pq.insert(i);
+
+    return r;
   }
 
   bool

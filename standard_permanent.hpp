@@ -36,10 +36,9 @@ struct standard_permanent: std::vector<std::optional<Label>>
     const auto &i = get_index(l);
     // There should be no label for the target vertex.
     assert(!base_type::operator[](i));
-    // Assign the value, and return the reference to the label.  The *
-    // operator returns the label of the optional without checking,
-    // and no need to, because we just assigned it.
-    return *(base_type::operator[](i) = std::forward<T>(l));
+    // Emplace (either copy or move construct) and return the
+    // reference to the label.
+    return base_type::operator[](i).emplace(std::forward<T>(l));
   }
 };
 
