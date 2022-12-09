@@ -76,10 +76,11 @@ struct standard_tracer
     return &pl;
   }
 
+  template <typename Vertex>
   const auto &
-  operator[](size_type index) const
+  operator[](const Vertex &v) const
   {
-    return m_P[index];
+    return m_P[get_index(v)];
   }
 };
 
