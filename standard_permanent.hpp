@@ -6,18 +6,33 @@
 #include <utility>
 #include <vector>
 
+// We introduce myoptional only to have the empty function.
+template <typename T>
+struct myoptional: public std::optional<T>
+{
+  // Use the constructors of std::optional.
+  using base = std::optional<T>;
+  using base::base;
+
+  bool
+  empty() const
+  {
+    return !static_cast<bool>(*this);
+  }
+};
+
 // The container type for storing permanent standard labels.  A vertex
 // can have a label or not, and so we make the label optional.  We go
 // for the std::optional instead of std::unique_ptr, because optional
 // stores its value inside, and so the labels are allocated in-place
 // and not in a remote part.
 template <typename Label>
-struct standard_permanent: std::vector<std::optional<Label>>
+struct standard_permanent: std::vector<myoptional<Label>>
 {
   // That's the label type we're using.
   using label_type = Label;
   // The type of data a vertex has.
-  using vd_type = std::optional<label_type>;
+  using vd_type = myoptional<label_type>;
   // The type of the vector of vertex data.
   using base_type = std::vector<vd_type>;
   // The size type of the base type.

@@ -3,36 +3,29 @@
 
 #include "graph.hpp"
 
-template <typename Label>
-auto
-get_cost(const Label &);
-
-template <typename Label>
-auto
-get_edge(const Label &);
-
-template <typename Graph, typename Permanent, typename Path>
+template <typename Permanent>
 struct standard_tracer
 {
+  const Permanent &m_P;
+
   // That's the label type we're using.
-  using label_t = typename Permanent::label_t;
+  using label_type = typename Permanent::label_type;
   // The type of vertex data.
-  using vd_t = typename Permanent::vd_t;
+  using vd_type = typename Permanent::vd_type;
   // The path type.  The trace function needs it.
-  using path_t = Path;
-
-  // The graph.
-  const Graph &m_g;
-
-  standard_tracer(const Graph &g): m_g(g)
+  using path_type = std::list<label_type>;
+  // The size type of the permanent container.
+  using size_type = Permanent::size_type;
+  
+  standard_tracer(const Permanent &P): m_P(P)
   {
   }
 
   /**
-   * Initialize the tracing.  We don't need the path here.
+   * Initialize the tracing.
    */
-  const label_t *
-  init(path_t &, const vd_t &l)
+  auto
+  init(const vd_type &l)
   {
     assert(l);
     return &*l;
@@ -42,7 +35,7 @@ struct standard_tracer
    * Push the label to the path.
    */
   void
-  push(path_t &p, const label_t *lp)
+  push(path_type &p, const label_type *lp)
   {
     // This is the label we process.
     const auto &l = *lp;
@@ -57,15 +50,15 @@ struct standard_tracer
    * require this is not the starting label.  The objective is to find
    * the previous label on the path.
    */
-  const label_t *
-  advance(const Permanent &P, const label_t *l_ptr)
+  const label_type *
+  advance(const Permanent &P, const label_type *l_ptr)
   {
     // This is the label we process.
     const auto &l = *l_ptr;
     // This is the edge of the label.
     const auto &e = get_edge(l);
     // The source of the edge.
-    const auto &s = boost::source(e, m_g);
+    const auto &s = get_source(e);
 
     // Find the previous element for vertex s.
     const auto &pe = P[s];
@@ -74,15 +67,21 @@ struct standard_tracer
     // Get the label of the element.
     const auto &pl = *pe;
 
-    // The cost of the label.
-    const auto &c = get_cost(l);
-    // The edge cost.
-    const auto &ec = boost::get(boost::edge_weight, m_g, e);
-    // Make sure we've got the costs right.
-    assert(get_cost(pl) + ec == c);
+    // The weight of the label.
+    const auto &c = get_weight(l);
+    // The edge weight.
+    const auto &ec = get_weight(e);
+    // Make sure we've got the weights right.
+    assert(get_weight(pl) + ec == c);
 
     // Return the address of the previous label.
     return &pl;
+  }
+
+  const auto &
+  operator[](size_type index) const
+  {
+    return m_P[index];
   }
 };
 
