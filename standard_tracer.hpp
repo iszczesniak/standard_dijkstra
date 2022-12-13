@@ -25,7 +25,7 @@ struct standard_tracer
    * Initialize the tracing.
    */
   auto
-  init(const vd_type &l)
+  init(const vd_type &l) const
   {
     assert(l);
     return &*l;
@@ -35,14 +35,12 @@ struct standard_tracer
    * Push the label to the path.
    */
   void
-  push(path_type &p, const label_type *lp)
+  push(path_type &p, const label_type *lp) const
   {
     // This is the label we process.
     const auto &l = *lp;
-    // The edge of the label.
-    const auto &e = get_edge(l);
     // Add the label's edge to the path.
-    p.push_front(e);
+    p.push_front(l);
   }
 
   /**
@@ -51,17 +49,17 @@ struct standard_tracer
    * the previous label on the path.
    */
   const label_type *
-  advance(const Permanent &P, const label_type *l_ptr)
+  advance(const label_type *l_ptr) const
   {
     // This is the label we process.
     const auto &l = *l_ptr;
     // This is the edge of the label.
     const auto &e = get_edge(l);
-    // The source of the edge.
-    const auto &s = get_source(e);
+    // The index of the source of the edge.
+    const auto &si = get_index(get_source(e));
 
     // Find the previous element for vertex s.
-    const auto &pe = P[s];
+    const auto &pe = m_P[si];
     // The element must have a label.
     assert(pe);
     // Get the label of the element.
@@ -78,10 +76,11 @@ struct standard_tracer
     return &pl;
   }
 
+  template <typename Vertex>
   const auto &
-  operator[](size_type index) const
+  operator[](const Vertex &v) const
   {
-    return m_P[index];
+    return m_P[get_index(v)];
   }
 };
 
