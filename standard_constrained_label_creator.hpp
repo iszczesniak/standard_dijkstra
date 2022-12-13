@@ -3,37 +3,36 @@
 
 #include "standard_label_creator.hpp"
 
-#include <array>
-#include <tuple>
+#include <type_traits>
 
-// Creates new labels.
-template <typename Graph, typename Cost>
+template <typename Weight>
 struct standard_constrained_label_creator:
-  standard_label_creator<Graph, Cost>
+  standard_label_creator
 {
-  using Label = standard_label<Graph, Cost>;
-  using base = standard_label_creator<Graph, Cost>;
+  using base_type = standard_label_creator;
+  using weight_type = Weight;
+  const weight_type m_max_weight;
 
-  const Cost m_max_cost;
-
-  standard_constrained_label_creator(const Graph &g, Cost max_cost):
-    base(g), m_max_cost(max_cost)
+  standard_constrained_label_creator(weight_type max_weight):
+    m_max_weight(max_weight)
   {
   }
 
-  // Create a new label.  We are at the target node of label l, and we
-  // try to take edge e.
+  // Create a new label, and check the weight.
+  template <typename Label, typename Edge>
   auto
-  operator()(const Edge<Graph> &e, const Label &l) const
+  operator()(const Label &l, const Edge &e) const
   {
-    auto f = [&m_max_cost = m_max_cost](Cost c)
-             {
-               if (c > m_max_cost)
-                 // If we went over the reach, throw true.
-                 throw true;
-             };
+    static_assert(std::is_same_v<weight_type,
+                                 typename Label::weight_type>);
 
-    return base::operator()(e, l, f);
+    // The candidate label.
+    auto cl = base_type::operator()(l, e);
+
+    if (get_weight(cl[0]) > m_max_weight)
+      throw true;
+
+    return cl;
   }
 };
 

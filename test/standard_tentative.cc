@@ -7,16 +7,7 @@ struct label: weight<unsigned>, index<unsigned>
   {
   }
 
-  constexpr auto
-  operator <=> (const label &l) const
-  {
-    if (get_weight(*this) < get_weight(l))
-      return std::strong_ordering::less;
-    if (get_weight(*this) > get_weight(l))
-      return std::strong_ordering::greater;
-
-    return std::strong_ordering::equal;
-  }
+  using weight<unsigned>::operator<=>;
 
   bool operator == (const label &) const = default;
 };
