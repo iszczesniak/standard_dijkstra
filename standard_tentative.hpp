@@ -38,9 +38,9 @@ struct standard_tentative: std::vector<std::optional<Label>>
   };
 
   // The set of indexes that serves as the priority queue.  We need
-  // the multiset, because there can be labels that compare equal with
-  // the < operator (i.e., < doesn't hold between them): equal labels
-  // for different vertexes.
+  // the multiset, because there can be labels that compare equivalent
+  // with the < operator (i.e., < doesn't hold between them): equal
+  // labels for different vertexes.
   std::multiset<size_type, cmp> m_pq;
 
   standard_tentative(size_type count):
