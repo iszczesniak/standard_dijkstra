@@ -3,7 +3,7 @@ TESTS = standard_tentative
 #CXXFLAGS = -g -Wno-deprecated
 CXXFLAGS = -O3 -Wno-deprecated
 
-CXXFLAGS := -std=c++20
+CXXFLAGS := -std=c++23
 CXXFLAGS := $(CXXFLAGS) -I ../
 CXXFLAGS := $(CXXFLAGS) -I graph
 
