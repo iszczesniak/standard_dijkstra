@@ -3,9 +3,10 @@ TESTS = standard_tentative
 #CXXFLAGS = -g -Wno-deprecated
 CXXFLAGS = -O3 -Wno-deprecated
 
-CXXFLAGS := -std=c++23
+CXXFLAGS := -std=c++20
 CXXFLAGS := $(CXXFLAGS) -I ../
 CXXFLAGS := $(CXXFLAGS) -I graph
+CXXFLAGS := $(CXXFLAGS) -I props
 
 # Use the C++ linker
 LINK.o = $(LINK.cc)
