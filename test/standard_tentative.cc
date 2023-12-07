@@ -3,7 +3,7 @@
 
 struct label: weight<unsigned>, key<unsigned>
 {
-  label(unsigned w, unsigned i): weight(w), key(i)
+  label(unsigned w, unsigned k): weight(w), key(k)
   {
   }
 
