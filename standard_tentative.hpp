@@ -37,8 +37,8 @@ struct standard_tentative: std::vector<std::optional<Label>>
     }
   };
 
-  // The set of indexes that serves as the priority queue.  We need
-  // the multiset, because there can be labels that compare equivalent
+  // The set of keys that serves as the priority queue.  We need the
+  // multiset, because there can be labels that compare equivalent
   // with the < operator (i.e., < doesn't hold between them): equal
   // labels for different vertexes.
   std::multiset<size_type, cmp> m_pq;
@@ -53,13 +53,13 @@ struct standard_tentative: std::vector<std::optional<Label>>
   const label_type &
   push(T &&l)
   {
-    // The index of the label.
-    const auto &i = get_index(l);
-    // There should be no label for index i.
+    // The key of the label.
+    const auto &i = get_key(l);
+    // There should be no label for key i.
     assert(!base_type::operator[](i));
     // Emplace (copy or move construct) the value.
     auto &r = base_type::operator[](i).emplace(std::forward<T>(l));
-    // Insert the index into the priority queue.
+    // Insert the key into the priority queue.
     m_pq.insert(i);
 
     return r;
@@ -76,7 +76,7 @@ struct standard_tentative: std::vector<std::optional<Label>>
   {
     // Make sure the queue is not empty.
     assert(!m_pq.empty());
-    // Get the index at the top.
+    // Get the key at the top.
     auto i = *m_pq.begin();
     // Pop the element.
     m_pq.erase(m_pq.begin());
@@ -96,13 +96,13 @@ has_better_or_equal(const standard_tentative<Label> &C,
                     const Label &j)
 {
   // The optional label i.
-  const auto &oi = C[get_index(j)];
+  const auto &oi = C[get_key(j)];
 
   if (oi)
     {
       const auto &i = *oi;
-      // Make sure the indexes are the same.
-      assert(get_index(i) == get_index(j));
+      // Make sure the keys are the same.
+      assert(get_key(i) == get_key(j));
       // Here we use the <= operator we define.
       return i <= j;
     }
@@ -115,8 +115,8 @@ void
 purge_worse(standard_tentative<Label> &T,
             const Label &j)
 {
-  // The optional tentative label for the vertex of index j.
-  auto &oi = T[get_index(j)];
+  // The optional tentative label for the vertex of key j.
+  auto &oi = T[get_key(j)];
   // There must be no tentative label, and if there is one, it cannot
   // be better or equal to j.
   assert(!oi || !(*oi <= j));

@@ -55,8 +55,8 @@ struct standard_tracer
     const auto &l = *l_ptr;
     // This is the edge of the label.
     const auto &e = get_edge(l);
-    // The index of the source of the edge.
-    const auto &si = get_index(get_source(e));
+    // The key of the source of the edge.
+    const auto &si = get_key(get_source(e));
 
     // Find the previous element for vertex s.
     const auto &pe = m_P[si];
@@ -80,7 +80,7 @@ struct standard_tracer
   const auto &
   operator[](const Vertex &v) const
   {
-    return m_P[get_index(v)];
+    return m_P[get_key(v)];
   }
 };
 

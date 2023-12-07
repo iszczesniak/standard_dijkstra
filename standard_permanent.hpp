@@ -47,8 +47,8 @@ struct standard_permanent: std::vector<myoptional<Label>>
   const label_type &
   push(T &&l)
   {
-    // The index of the label.
-    const auto &i = get_index(l);
+    // The key of the label.
+    const auto &i = get_key(l);
     // There should be no label for the target vertex.
     assert(!base_type::operator[](i));
     // Emplace (either copy or move construct) and return the
@@ -63,13 +63,13 @@ has_better_or_equal(const standard_permanent<Label> &C,
                     const Label &j)
 {
   // The optional label i.
-  const auto &oi = C[get_index(j)];
+  const auto &oi = C[get_key(j)];
 
   if (oi)
     {
       const auto &i = *oi;
-      // Make sure the indexes are the same.
-      assert(get_index(i) == get_index(j));
+      // Make sure the keyes are the same.
+      assert(get_key(i) == get_key(j));
       // Here we use the <= operator we define.
       return i <= j;
     }
