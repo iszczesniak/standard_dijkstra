@@ -24,10 +24,12 @@ int main()
   label l1(1, 0), l2(0, 0), l3(0, 1);
   standard_tentative<label> t(2);
 
-  // Labels l2 and l3 compare equal, because neither l2 < l3, nor l3 <
-  // l2 hold.  The order between equal labels is stable, because the
-  // insert function inserts an equal element at the upper bound
-  // (i.e., after the last equal element), and the sorting is stable.
+  // Labels l2 and l3 compare equivalent, because neither l2 < l3, nor
+  // l3 < l2 hold.  The order between equivalent labels is stable,
+  // because the insert function inserts an equivalent element at the
+  // upper bound (i.e., after the last equivalent element, with an
+  // iterator pointing to a greater element), and the sorting is
+  // stable.
   t.push(l2);
   t.push(l3);
 
