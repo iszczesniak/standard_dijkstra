@@ -15,7 +15,7 @@ struct standard_tracer
   // The path type.  The trace function needs it.
   using path_type = std::list<label_type>;
   // The size type of the permanent container.
-  using size_type = Permanent::size_type;
+  using size_type = typename Permanent::size_type;
   
   standard_tracer(const Permanent &P): m_P(P)
   {
