@@ -1,2 +1,2 @@
-standard_tentative.o: standard_tentative.cc graph/props.hpp \
+standard_tentative.o: standard_tentative.cc props/props.hpp \
  ../standard_tentative.hpp
