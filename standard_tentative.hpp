@@ -37,10 +37,11 @@ struct standard_tentative: std::vector<std::optional<Label>>
     }
   };
 
-  // The set of keys that serves as the priority queue.  We need the
-  // multiset, because there can be labels that compare equivalent
-  // with the < operator (i.e., < doesn't hold between them): equal
-  // labels for different vertexes.
+  // The set of keys that serves as the priority queue.  Even though
+  // the keys in the queue are always different, we need the multiset,
+  // because there can be labels that compare equivalent with the cmp
+  // functor (i.e., cmp doesn't hold between them): equal labels for
+  // different vertexes.
   std::multiset<size_type, cmp> m_pq;
 
   standard_tentative(size_type count):
@@ -53,16 +54,27 @@ struct standard_tentative: std::vector<std::optional<Label>>
   const label_type &
   push(T &&l)
   {
-    // The key of the label.
-    const auto &i = get_key(l);
-    // There should be no label for key i.
-    assert(!base_type::operator[](i));
-    // Emplace (copy or move construct) the value.
-    auto &r = base_type::operator[](i).emplace(std::forward<T>(l));
-    // Insert the key into the priority queue.
-    m_pq.insert(i);
+    // The key of the label to push.
+    const auto &k = get_key(l);
+    // The optional label i, the one that may already exist.
+    auto &oi = base_type::operator[](k);
 
-    return r;
+    // If there is a label already, then we first have to remove the
+    // key from the queue.
+    if (oi)
+      {
+        // Make sure the keys are the same.
+        assert(get_key(*oi) == k);
+        // Erase the key from the priority queueu.
+        m_pq.erase(k);
+      }
+
+    // Either initialization or assignment by either copy or move.
+    oi = std::forward<T>(l);
+    // Insert the key into the priority queue.
+    m_pq.insert(k);
+
+    return *oi;
   }
 
   bool
@@ -77,14 +89,17 @@ struct standard_tentative: std::vector<std::optional<Label>>
     // Make sure the queue is not empty.
     assert(!m_pq.empty());
     // Get the key at the top.
-    auto i = *m_pq.begin();
+    auto k = *m_pq.begin();
     // Pop the element.
     m_pq.erase(m_pq.begin());
 
-    // This is the label we return.
-    auto l = std::move(*base_type::operator[](i));
+    // The optional label i, the one that may already exist.
+    auto &oi = base_type::operator[](k);
+    // The label must exist.
+    assert (oi);
+    auto l = std::move(*oi);
     // We remove the label from the vector.
-    base_type::operator[](i).reset();
+    oi.reset();
 
     return l;
   }
@@ -103,25 +118,11 @@ has_better_or_equal(const standard_tentative<Label> &C,
       const auto &i = *oi;
       // Make sure the keys are the same.
       assert(get_key(i) == get_key(j));
-      // Here we use the <= operator we define.
+      // Here we use the <= operator for linear orderings.
       return i <= j;
     }
 
   return false;
-}
-
-template <typename Label>
-void
-purge_worse(standard_tentative<Label> &T,
-            const Label &j)
-{
-  // The optional tentative label for the vertex of key j.
-  auto &oi = T[get_key(j)];
-  // There must be no tentative label, and if there is one, it cannot
-  // be better or equal to j.
-  assert(!oi || !(*oi <= j));
-  // And so we get here only to release the tentative label.
-  oi.reset();
 }
 
 #endif // STANDARD_TENTATIVE_HPP
