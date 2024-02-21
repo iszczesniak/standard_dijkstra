@@ -1,29 +1,14 @@
-TESTS = standard_tentative
+PROGS = standard_tentative
+SRCS_standard_tentative = standard_tentative.cc
+MAN =
 
-#CXXFLAGS = -g -Wno-deprecated
-CXXFLAGS = -O3 -Wno-deprecated
+CXX = clang++-17
 
-CXXFLAGS := -std=c++20
-CXXFLAGS := $(CXXFLAGS) -I ../
-CXXFLAGS := $(CXXFLAGS) -I graph
-CXXFLAGS := $(CXXFLAGS) -I props
+#CXXFLAGS += -g -Wno-deprecated
+CXXFLAGS += -O3 -Wno-deprecated
 
-# Use the C++ linker
-LINK.o = $(LINK.cc)
+CXXFLAGS += -std=c++20
+CXXFLAGS += -I ../
+CXXFLAGS += -I props
 
-# Run the tests.
-run: $(TESTS)
-	@for i in $(TESTS); do echo "Running" $$i; ./$$i; done
-
-count:
-	wc -l *.hpp *.cc
-
-clean:
-	rm -rf *~
-	rm -rf *.o
-	rm -rf $(TESTS)
-
-depend:
-	g++ -MM $(CXXFLAGS) *.cc > dependencies
-
-include dependencies
+.include <bsd.prog.mk>

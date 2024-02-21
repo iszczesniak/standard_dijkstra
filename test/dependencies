@@ -1,2 +1,0 @@
-standard_tentative.o: standard_tentative.cc props/props.hpp \
- ../standard_tentative.hpp
