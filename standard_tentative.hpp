@@ -69,7 +69,10 @@ struct standard_tentative: std::vector<std::optional<Label>>
         m_pq.erase(k);
       }
 
-    // Either initialization or assignment by either copy or move.
+    // We use emplace instead of the assignment operator of
+    // std::optional, so that we do not require the assignment
+    // operator of the label.  Emplace uses only the copy or move
+    // constructor.
     oi.emplace(std::forward<T>(l));
     // Insert the key into the priority queue.
     m_pq.insert(k);
