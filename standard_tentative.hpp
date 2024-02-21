@@ -70,7 +70,7 @@ struct standard_tentative: std::vector<std::optional<Label>>
       }
 
     // Either initialization or assignment by either copy or move.
-    oi = std::forward<T>(l);
+    oi.emplace(std::forward<T>(l));
     // Insert the key into the priority queue.
     m_pq.insert(k);
 
